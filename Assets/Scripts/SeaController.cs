@@ -9,12 +9,12 @@ public class SeaController : MonoBehaviour
     private Dictionary<Vector2, SeaNode> seaNodes;
     [SerializeField] public static List<GameObject> seaNodeGameObjects = new();
 
-    public static int quality = 600;
+    public static int quality = 1200;
 
 
     void Awake()
     {
-        GenerateSea(20, 10, -10, -12, 0.4f);
+        GenerateSea(60, 10, -15, -12, 0.5f);
     }
 
     public void GenerateSea(int horizontal, int vertical, int offsetX, int offsetY, float unitSize)
