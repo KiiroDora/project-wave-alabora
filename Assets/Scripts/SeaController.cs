@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class SeaController : MonoBehaviour
@@ -10,7 +7,9 @@ public class SeaController : MonoBehaviour
     [SerializeField] private GameObject seaContainer;
 
     private Dictionary<Vector2, SeaNode> seaNodes;
-    [SerializeField] private List<GameObject> seaNodeGameObjects = new();
+    [SerializeField] public static List<GameObject> seaNodeGameObjects = new();
+
+    public static int quality;
 
 
     void Awake()
@@ -20,6 +19,8 @@ public class SeaController : MonoBehaviour
 
     public void GenerateSea(int horizontal, int vertical, int offsetX, int offsetY)
     {
+        quality = horizontal * vertical / 2;
+    
         seaNodes = new();
 
         for (int x = 1 + offsetX; x <= horizontal + offsetX; x++)
@@ -108,33 +109,5 @@ public class SeaController : MonoBehaviour
             }
         }
 
-
-        for (int x = 1 + offsetX; x <= horizontal + offsetX; x++)
-        {
-            seaNodes.TryGetValue(new Vector2(x, 1 + offsetY), out SeaNode spawnedNodeBottom);
-            GameObject spawnedNodeGameObjectBottom = spawnedNodeBottom.gameObject;
-            SeaSpriteShapeController.points.Add(spawnedNodeGameObjectBottom.transform);
-        }
-
-        for (int y = 1 + offsetY; y <= vertical + offsetY; y++)
-        {
-            seaNodes.TryGetValue(new Vector2(horizontal + offsetX, y), out SeaNode spawnedNodeRight);
-            GameObject spawnedNodeGameObjectRight = spawnedNodeRight.gameObject;
-            SeaSpriteShapeController.points.Add(spawnedNodeGameObjectRight.transform);
-        }
-
-        for (int x = horizontal + offsetX; x >= 1 + offsetX; x--)
-        {
-            seaNodes.TryGetValue(new Vector2(x, vertical + offsetY), out SeaNode spawnedNodeTop);
-            GameObject spawnedNodeGameObjectTop = spawnedNodeTop.gameObject;
-            SeaSpriteShapeController.points.Add(spawnedNodeGameObjectTop.transform);
-        }
-
-        for (int y = vertical + offsetY; y >= 1 + offsetY; y--)
-        {
-            seaNodes.TryGetValue(new Vector2(1 + offsetX, y), out SeaNode spawnedNodeLeft);
-            GameObject spawnedNodeGameObjectLeft = spawnedNodeLeft.gameObject;
-            SeaSpriteShapeController.points.Add(spawnedNodeGameObjectLeft.transform);
-        }
     }
 }
