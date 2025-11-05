@@ -9,23 +9,21 @@ public class SeaController : MonoBehaviour
     private Dictionary<Vector2, SeaNode> seaNodes;
     [SerializeField] public static List<GameObject> seaNodeGameObjects = new();
 
-    public static int quality;
+    public static int quality = 600;
 
 
     void Awake()
     {
-        GenerateSea(30, 10, -15, -12);
+        GenerateSea(20, 10, -10, -12, 0.4f);
     }
 
-    public void GenerateSea(int horizontal, int vertical, int offsetX, int offsetY)
+    public void GenerateSea(int horizontal, int vertical, int offsetX, int offsetY, float unitSize)
     {
-        quality = horizontal * vertical / 2;
-    
         seaNodes = new();
 
-        for (int x = 1 + offsetX; x <= horizontal + offsetX; x++)
+        for (float x = unitSize + offsetX; x <= horizontal + offsetX; x += unitSize)
         {
-            for (int y = 1 + offsetY; y <= vertical + offsetY; y++)
+            for (float y = unitSize + offsetY; y <= vertical + offsetY; y += unitSize)
             {
                 GameObject spawnedNodeGameObject = Instantiate(seaNode, new Vector3(x, y), Quaternion.identity, seaContainer.transform);
                 spawnedNodeGameObject.name = $"SeaNode {x} {y}";
@@ -36,58 +34,58 @@ public class SeaController : MonoBehaviour
             }
         }
 
-        for (int x = 1 + offsetX; x <= horizontal + offsetX; x++)
+        for (float x = unitSize + offsetX; x <= horizontal + offsetX; x += unitSize)
         {
-            for (int y = 1 + offsetY; y <= vertical + offsetY; y++)
+            for (float y = unitSize + offsetY; y <= vertical + offsetY; y += unitSize)
             {
                 seaNodes.TryGetValue(new Vector2(x, y), out SeaNode spawnedNode);
                 GameObject spawnedNodeGameObject = spawnedNode.gameObject;
 
-                if (seaNodes.ContainsKey(new Vector2(x - 1, y)))
+                if (seaNodes.ContainsKey(new Vector2(x - unitSize, y)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x - 1, y), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x - unitSize, y), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x + 1, y)))
+                if (seaNodes.ContainsKey(new Vector2(x + unitSize, y)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x + 1, y), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x + unitSize, y), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x, y + 1)))
+                if (seaNodes.ContainsKey(new Vector2(x, y + unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x, y + 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x, y + unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x, y - 1)))
+                if (seaNodes.ContainsKey(new Vector2(x, y - unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x, y - 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x, y - unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x - 1, y - 1)))
+                if (seaNodes.ContainsKey(new Vector2(x - unitSize, y - unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x - 1, y - 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x - unitSize, y - unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x + 1, y - 1)))
+                if (seaNodes.ContainsKey(new Vector2(x + unitSize, y - unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x + 1, y - 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x + unitSize, y - unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x - 1, y + 1)))
+                if (seaNodes.ContainsKey(new Vector2(x - unitSize, y + unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x - 1, y + 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x - unitSize, y + unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
-                if (seaNodes.ContainsKey(new Vector2(x + 1, y + 1)))
+                if (seaNodes.ContainsKey(new Vector2(x + unitSize, y + unitSize)))
                 {
-                    seaNodes.TryGetValue(new Vector2(x + 1, y + 1), out SeaNode neighborNode);
+                    seaNodes.TryGetValue(new Vector2(x + unitSize, y + unitSize), out SeaNode neighborNode);
                     spawnedNode.neighborNodes.Add(neighborNode);
                     spawnedNodeGameObject.AddComponent(typeof(SpringJoint2D));
                 }
@@ -102,7 +100,7 @@ public class SeaController : MonoBehaviour
                     }
                 }
 
-                if (y == 1 + offsetY || x == 1 + offsetX || x - offsetX == horizontal)
+                if (y == unitSize + offsetY || x == unitSize + offsetX || x - offsetX == horizontal)
                 {
                     spawnedNodeGameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
                 }
