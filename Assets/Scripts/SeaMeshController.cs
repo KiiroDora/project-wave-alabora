@@ -12,7 +12,7 @@ public class SeaMeshController : MonoBehaviour
 
     void Start()
     {
-        foreach (GameObject node in SeaController.seaNodeGameObjects.ToArray())
+        foreach (GameObject node in SeaController.seaNodeGameObjects.ToArray())  // add all initial node positions to vertices
         {
             vertices.Add(node.transform.position);
         }
@@ -21,8 +21,8 @@ public class SeaMeshController : MonoBehaviour
 
     private void Update()
     {
-        vertices.Clear();
-        foreach (GameObject node in SeaController.seaNodeGameObjects.ToArray())
+        vertices.Clear();  // wipe the vertices list
+        foreach (GameObject node in SeaController.seaNodeGameObjects.ToArray())  // add the updated positions into the list
         {
             vertices.Add(node.transform.position);
         }
