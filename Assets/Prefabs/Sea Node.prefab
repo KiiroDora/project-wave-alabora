@@ -169,3 +169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SeaNode
   neighborNodes: []
+  leftNeighbors: []
+  rightNeighbors: []
+  initialPosition: {x: 0, y: 0}

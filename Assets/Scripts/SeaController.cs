@@ -9,12 +9,12 @@ public class SeaController : MonoBehaviour
     private Dictionary<Vector2, SeaNode> seaNodes;
     public static List<GameObject> seaNodeGameObjects = new();
 
-    public static int quality = 1200;  // affects mesh generation for SeaMeshController
+    public static int quality = 75;  // affects mesh generation for SeaMeshController
 
 
     void Awake()
     {
-        GenerateSea(60, 10, -15, -12, 0.5f);
+        GenerateSea(60, 10, -15, -12, 2f);
     }
 
     void Update()
@@ -23,11 +23,12 @@ public class SeaController : MonoBehaviour
         if (time != 0 && time % 5 == 0)  // make a small wave every 5 seconds
         {
             int random = Random.Range(0, seaNodeGameObjects.Count);  // pick a random node object
-            seaNodes.TryGetValue(seaNodeGameObjects[random].transform.position, out SeaNode node);  // get its node
-            node.StartCoroutine(node.SendWave(10f, 0.5f, Vector2.left, 0.5f));
+            seaNodes.TryGetValue(seaNodeGameObjects[random].GetComponent<SeaNode>().initialPosition, out SeaNode node);  // get its node
+            node.StartCoroutine(node.SendWave(8f, 0.5f, Vector2.left, 0.5f));
         }
 
-         // node.StartCoroutine(node.SendWave(20f, 0.5f, new Vector2 (-0.5f, 2f), 0.2f)); <-- example for big waves
+        // node.StartCoroutine(node.SendWave(20f, 0.5f, new Vector2 (-0.5f, 2f), 0.2f)); <-- example for big waves, only do positive y directions on surface nodes
+        // node.StartCoroutine(node.SendWave(13f, 0.5f, Vector2.left, 0.5f)); <-- example for small waves
     }
 
     public void GenerateSea(int horizontal, int vertical, int offsetX, int offsetY, float unitSize)
@@ -35,6 +36,7 @@ public class SeaController : MonoBehaviour
         seaNodes = new();
 
         // we have to instantiate all nodes first, then handle their relations
+        // unitSize is the distance between each node position
 
         for (float x = unitSize + offsetX; x <= horizontal + offsetX; x += unitSize)
         {
