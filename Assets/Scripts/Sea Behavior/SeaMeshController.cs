@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SeaMeshController : MonoBehaviour
 {
-    // Credits --> Code edited from Ilham Effendi's Dynamic 2D Water
+    // Credits --> Code referenced and edited from Ilham Effendi's Dynamic 2D Water
 
     /* Note: Current amount of vertexes are not good enough for a quality mesh, but too many nodes cause memory issues
     * We need to find a way to create additional vertexes between nodes without increasing the actual amount of nodes
