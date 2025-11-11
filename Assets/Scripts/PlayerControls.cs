@@ -5,6 +5,7 @@ public class PlayerControls : MonoBehaviour
 {
     // Credits --> Code referenced and edited from Contraband's "Basic Movement in Unity2D using the New Input System, in 6 minutes." video
     Rigidbody2D rb2d;
+    SpriteRenderer spriteRenderer;
 
     [SerializeField] float moveSpeed = 7;
     [SerializeField] float jumpForce = 7;
@@ -18,6 +19,7 @@ public class PlayerControls : MonoBehaviour
     void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void FixedUpdate()
@@ -35,11 +37,14 @@ public class PlayerControls : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         horizontal = context.ReadValue<Vector2>().x;
-    }
-
-    public void Attack(InputValue value)
-    {
-
+        if (!spriteRenderer.flipX && horizontal < 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (spriteRenderer.flipX && horizontal > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
     }
 
     public void Jump(InputAction.CallbackContext context)
