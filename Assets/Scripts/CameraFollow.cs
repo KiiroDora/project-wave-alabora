@@ -9,6 +9,11 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float smoothTime = 0.3f; //speed for linear movement
 
 
+    void Awake()
+    {
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
     void FixedUpdate()
     {
         Vector3 targetPosition = target.position + offset; //set up initial position with offset
