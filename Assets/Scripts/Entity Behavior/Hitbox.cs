@@ -20,13 +20,20 @@ public class Hitbox : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Hurtbox"))
         {
-            collision.gameObject.GetComponentInParent<EntityBehavior>().TakeDamage(damage);  // target takes damage
+            EntityBehavior target = collision.gameObject.GetComponentInParent<EntityBehavior>();
+            EntityBehavior attacker = gameObject.GetComponentInParent<EntityBehavior>();
 
-            if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
+            if (target is PlayerBehavior && attacker is EnemyBehavior || target is EnemyBehavior && attacker is PlayerBehavior)
             {
-                collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
-                    (collision.gameObject.transform.position - transform.position).normalized * knockbackRate, ForceMode2D.Impulse
-                );
+                target.TakeDamage(damage);  // target takes damage
+
+                if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
+                {
+                    Vector2 knockbackVector = collision.gameObject.transform.position - transform.position;
+                    collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
+                        knockbackVector.normalized * knockbackRate, ForceMode2D.Impulse
+                    );
+                }
             }
         }
     }

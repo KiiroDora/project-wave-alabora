@@ -7,6 +7,8 @@ public class EnemyBehavior : EntityBehavior
     [SerializeField] private float moveSpeed = 2;
     [SerializeField] private Transform groundCheckRight;
     [SerializeField] private Transform groundCheckLeft;
+    [SerializeField] private Transform groundCheckMiddle;
+    [SerializeField] LayerMask groundLayer;
     private Transform target;
     Vector2 relativePosition;
 
@@ -34,24 +36,21 @@ public class EnemyBehavior : EntityBehavior
 
         bool isInAttackRange = IsInAttackRange();
         bool canWalk = IsWalkableAhead() && !isInAttackRange;
-        if (rb2d.linearVelocityY == 0)
+        if (IsGrounded())
         {
             if (isInAttackRange)
             {
-                rb2d.linearVelocityX = 0;
+                
                 Attack();
             }
             else if (canWalk)
             {
-                if (Mathf.Abs(relativePosition.x) > 1.5f)
+                if (Mathf.Abs(relativePosition.x) > 2f)
                 {
-                    rb2d.linearVelocityX = relativePosition.normalized.x * moveSpeed;
+                    transform.Translate(relativePosition.normalized.x * moveSpeed * Time.deltaTime, 0, 0);
                 }
             }
-            else if (!canWalk)
-            {
-                rb2d.linearVelocityX = 0;
-            }
+
         }
     }
 
@@ -59,13 +58,19 @@ public class EnemyBehavior : EntityBehavior
     {
         // check if the area just ahead is walkable or empty space
         Transform groundCheck = spriteRenderer.flipX ? groundCheckLeft : groundCheckRight;  // use the appropriate ground check position
-        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1, 0.1f), CapsuleDirection2D.Horizontal, 0);
+        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1, 0.1f), CapsuleDirection2D.Horizontal, 0, groundLayer);
+    }
+
+    public bool IsGrounded()
+    {
+        // check if the area just below the player overlaps with any collider on the Ground layer
+        return Physics2D.OverlapCapsule(groundCheckMiddle.position, new Vector2(1, 0.1f), CapsuleDirection2D.Horizontal, 0, groundLayer);
     }
 
     public bool IsInAttackRange()
     {
         bool isPlayerInRange = Mathf.Abs(relativePosition.x) <= 1.5f;
-        return IsWalkableAhead() && target.GetComponent<Rigidbody2D>().linearVelocityY == 0 && isPlayerInRange;
+        return IsWalkableAhead() && target.GetComponent<PlayerControls>().IsGrounded() && isPlayerInRange;
     }
 
     public override void TakeDamage(int damage)
