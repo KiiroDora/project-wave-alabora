@@ -7,8 +7,8 @@ public class PlayerControls : MonoBehaviour
     Rigidbody2D rb2d;
     SpriteRenderer spriteRenderer;
 
-    [SerializeField] float moveSpeed = 7;
-    [SerializeField] float jumpForce = 7;
+    public static float moveSpeed = 7;
+    public static float jumpForce = 7;
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform groundCheck;

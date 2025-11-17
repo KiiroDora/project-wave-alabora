@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Hurtbox
+  - Sea
   layers:
   - Default
   - TransparentFX

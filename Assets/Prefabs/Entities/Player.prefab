@@ -129,7 +129,7 @@ MonoBehaviour:
   exitTime: 0.3
   col2D: {fileID: 0}
   damage: 0
-  knockbackRate: 5
+  knockbackRate: 4
 --- !u!1 &2511879083432726743
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   exitTime: 0.3
   col2D: {fileID: 0}
   damage: 0
-  knockbackRate: 5
+  knockbackRate: 4
 --- !u!1 &4379722547387852014
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,8 +675,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a313eae20a31f24ea644a774351891b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBehavior
-  maxhp: 100
-  hp: 100
   canAttack: 1
   OnDeath:
     m_PersistentCalls:
@@ -688,3 +686,6 @@ MonoBehaviour:
   hitboxes:
   - {fileID: 8786083203973471805}
   - {fileID: 7066213516531387020}
+  timesGotHit: 0
+  timesHit: 2
+  pulseState: 2

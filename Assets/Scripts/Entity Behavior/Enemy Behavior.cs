@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class EnemyBehavior : EntityBehavior
 {
-    Rigidbody2D rb2d;
-    [SerializeField] private float moveSpeed = 2;
     [SerializeField] private Transform groundCheckRight;
     [SerializeField] private Transform groundCheckLeft;
     [SerializeField] private Transform groundCheckMiddle;
@@ -12,12 +10,18 @@ public class EnemyBehavior : EntityBehavior
     private Transform target;
     Vector2 relativePosition;
 
+    public int maxhp;
+    public int hp;
+    [SerializeField] private float moveSpeed = 2;
+
+
     protected override void Awake()
     {
-        rb2d = GetComponent<Rigidbody2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
 
+        moveSpeed += Random.Range(0, 0.2f);
         maxhp = 30;
+        hp = maxhp;
         base.Awake();
     }
 
@@ -40,12 +44,11 @@ public class EnemyBehavior : EntityBehavior
         {
             if (isInAttackRange)
             {
-                
                 Attack();
             }
             else if (canWalk)
             {
-                if (Mathf.Abs(relativePosition.x) > 2f)
+                if (Mathf.Abs(relativePosition.x) > 2f && Mathf.Abs(relativePosition.x) < 4f)
                 {
                     transform.Translate(relativePosition.normalized.x * moveSpeed * Time.deltaTime, 0, 0);
                 }
@@ -53,6 +56,7 @@ public class EnemyBehavior : EntityBehavior
 
         }
     }
+    
 
     public bool IsWalkableAhead()
     {
@@ -73,15 +77,21 @@ public class EnemyBehavior : EntityBehavior
         return IsWalkableAhead() && target.GetComponent<PlayerControls>().IsGrounded() && isPlayerInRange;
     }
 
-    public override void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
-        base.TakeDamage(damage);
+        hp = Mathf.Clamp(hp - damage, 0, 999);  // reduce hp (cannot be lower than 0)
+        OnDamage?.Invoke();  // invoke damage events
+        if (hp == 0)
+        {
+            Die();
+        }
     }
 
     public override void Die()
     {
-        base.Die();  // handles death here
+        Destroy(gameObject); // temporary
         // TODO: stuff to add for Enemy's OnDeath -> Play animation then Destroy gameobject in animation's OnExit
+        base.Die();  // handles death here
     }
 
     public override IEnumerator AttackCoroutine()
@@ -102,17 +112,14 @@ public class EnemyBehavior : EntityBehavior
 
             // TODO: Play animation
             canAttack = false;
-            Debug.Log("Enemy Attack Start!");
             yield return new WaitForSeconds(hitboxToUse.entryTime);  // wait for windup
 
             hitboxToUse.col2D.enabled = true;  // activate hitbox
                 
-            Debug.Log("Enemy Contacting...");
             yield return new WaitForSeconds(hitboxToUse.contactTime);
                 
             hitboxToUse.col2D.enabled = false;  // deactivate hitbox
                 
-            Debug.Log("Enemy Attack finished");
             yield return new WaitForSeconds(hitboxToUse.exitTime);
 
             canAttack = true;

@@ -5,8 +5,7 @@ using UnityEngine.Events;
 
 public class EntityBehavior : MonoBehaviour
 {
-    public int maxhp;
-    public int hp;
+
     public bool canAttack = true;
     public UnityEvent OnDeath;
     public UnityEvent OnDamage;
@@ -17,19 +16,7 @@ public class EntityBehavior : MonoBehaviour
 
     protected virtual void Awake()
     {
-        hp = maxhp;
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    public virtual void TakeDamage(int damage)
-    {
-        hp = Mathf.Clamp(hp - damage, 0, 999);  // reduce hp (cannot be lower than 0)
-        OnDamage?.Invoke();  // invoke damage events
-        if (hp == 0)
-        {
-            Die();
-        }
-        Debug.Log("Took " + damage + " damage");
     }
 
     public virtual void Die()
