@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyBehavior : EntityBehavior
 {
+    Rigidbody2D rb2d;
     [SerializeField] private Transform groundCheckRight;
     [SerializeField] private Transform groundCheckLeft;
     [SerializeField] private Transform groundCheckMiddle;
@@ -10,17 +11,19 @@ public class EnemyBehavior : EntityBehavior
     private Transform target;
     Vector2 relativePosition;
 
-    public int maxhp;
+    public int maxhp = 50;
     public int hp;
     [SerializeField] private float moveSpeed = 2;
+    public bool isKnockedback = false;
+    public float selfKnockbackMultiplier = 1f;
 
 
     protected override void Awake()
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        rb2d = GetComponent<Rigidbody2D>();
 
         moveSpeed += Random.Range(0, 0.2f);
-        maxhp = 30;
         hp = maxhp;
         base.Awake();
     }
@@ -46,17 +49,24 @@ public class EnemyBehavior : EntityBehavior
             {
                 Attack();
             }
-            else if (canWalk)
+            else if (canWalk && !isKnockedback)
             {
-                if (Mathf.Abs(relativePosition.x) > 2f && Mathf.Abs(relativePosition.x) < 4f)
+                if (Mathf.Abs(relativePosition.x) > 2f && Mathf.Abs(relativePosition.x) < 10f)
                 {
-                    transform.Translate(relativePosition.normalized.x * moveSpeed * Time.deltaTime, 0, 0);
+                    rb2d.linearVelocityX = relativePosition.normalized.x * moveSpeed;
                 }
             }
 
         }
     }
-    
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Sea"))
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public bool IsWalkableAhead()
     {
@@ -74,17 +84,14 @@ public class EnemyBehavior : EntityBehavior
     public bool IsInAttackRange()
     {
         bool isPlayerInRange = Mathf.Abs(relativePosition.x) <= 1.5f;
-        return IsWalkableAhead() && target.GetComponent<PlayerControls>().IsGrounded() && isPlayerInRange;
+        return target.GetComponent<PlayerControls>().IsGrounded() && isPlayerInRange;
     }
 
     public void TakeDamage(int damage)
     {
-        hp = Mathf.Clamp(hp - damage, 0, 999);  // reduce hp (cannot be lower than 0)
+        hp = Mathf.Clamp(hp - damage, 1, 999);  // reduce hp (cannot be lower than 0)
         OnDamage?.Invoke();  // invoke damage events
-        if (hp == 0)
-        {
-            Die();
-        }
+        selfKnockbackMultiplier = 1 + 1 / hp; 
     }
 
     public override void Die()
@@ -92,6 +99,12 @@ public class EnemyBehavior : EntityBehavior
         Destroy(gameObject); // temporary
         // TODO: stuff to add for Enemy's OnDeath -> Play animation then Destroy gameobject in animation's OnExit
         base.Die();  // handles death here
+    }
+
+    public virtual IEnumerator CooldownKnockback(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isKnockedback = false;
     }
 
     public override IEnumerator AttackCoroutine()

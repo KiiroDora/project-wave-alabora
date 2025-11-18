@@ -657,8 +657,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c5a2d66e1f20d24890411d3b67a2b7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControls
-  moveSpeed: 7
-  jumpForce: 7
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -689,3 +687,6 @@ MonoBehaviour:
   timesGotHit: 0
   timesHit: 2
   pulseState: 2
+  attackSpeed: 1
+  baseMoveSpeed: 7
+  baseJumpForce: 7

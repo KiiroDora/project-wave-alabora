@@ -105,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 1177964017754810352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.3, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -145,7 +145,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.5, y: 0}
+  m_Offset: {x: -0.3, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -295,7 +295,7 @@ Transform:
   m_GameObject: {fileID: 6239265482448886873}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.3, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -335,7 +335,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.5, y: 0}
+  m_Offset: {x: 0.3, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -548,8 +548,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f37bfcece954444a37e1ecbd7c0b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBehavior
-  maxhp: 50
-  hp: 50
   canAttack: 1
   OnDeath:
     m_PersistentCalls:
@@ -561,13 +559,17 @@ MonoBehaviour:
   hitboxes:
   - {fileID: 6916737524298295521}
   - {fileID: 7255342931245664611}
-  moveSpeed: 2
   groundCheckRight: {fileID: 1399911881930578830}
   groundCheckLeft: {fileID: 8648370712016111026}
   groundCheckMiddle: {fileID: 1494000855842812491}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  maxhp: 50
+  hp: 50
+  moveSpeed: 2
+  isKnockedback: 0
+  selfKnockbackMultiplier: 1
 --- !u!1 &7829368340736499877
 GameObject:
   m_ObjectHideFlags: 0

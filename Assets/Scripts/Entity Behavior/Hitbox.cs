@@ -38,6 +38,9 @@ public class Hitbox : MonoBehaviour
 
                 if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
                 {
+                    PlayerControls.isKnockedback = true;
+                    StartCoroutine(PlayerControls.CooldownKnockback(0.5f));
+
                     Vector2 knockbackVector = collision.gameObject.transform.position - transform.position;
                     collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
                         knockbackVector.normalized * knockbackRate, ForceMode2D.Impulse
@@ -53,6 +56,9 @@ public class Hitbox : MonoBehaviour
 
                 if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
                 {
+                    enemy.isKnockedback = true;
+                    StartCoroutine(enemy.CooldownKnockback(1f));
+
                     Vector2 knockbackVector = collision.gameObject.transform.position - transform.position;
                     collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
                         (int)attackerPlayer.pulseState * 0.2f * knockbackRate * knockbackVector.normalized, ForceMode2D.Impulse

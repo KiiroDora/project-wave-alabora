@@ -10,11 +10,16 @@ public class PlayerBehavior : EntityBehavior
     public PulseState pulseState = PulseState.MEDIUM;
 
     public float attackSpeed = 1;
+    public float baseMoveSpeed = 8;
+    public float baseJumpForce = 8;
 
 
     protected override void Awake()
     {
         base.Awake();
+
+        PlayerControls.jumpForce = baseJumpForce;
+        PlayerControls.moveSpeed = baseMoveSpeed;
 
         StartCoroutine(CheckPulse(3f));
     }
@@ -64,7 +69,6 @@ public class PlayerBehavior : EntityBehavior
         yield return new WaitForSeconds(time);
 
         int pulse = Mathf.Clamp(timesHit - timesGotHit, 0, 999);
-        Debug.Log("Pulse: " + pulse + "\nHit: " + timesHit + "\nGot Hit: " + timesGotHit);
 
         if (pulse > 5)
         {
@@ -87,8 +91,9 @@ public class PlayerBehavior : EntityBehavior
         timesHit = 0;
 
         attackSpeed = 1f + (int)pulseState * 0.1f;
-        PlayerControls.jumpForce = 6f + (int)pulseState * 1f;
-        PlayerControls.moveSpeed = 6f + (int)pulseState * 1f;
+        PlayerControls.jumpForce = baseJumpForce + (int)pulseState * 1f;
+        PlayerControls.moveSpeed = baseMoveSpeed + (int)pulseState * 1f;
+        PlayerControls.fallingMultiplier = 2f + (int)pulseState * 0.2f;
 
         StartCoroutine(CheckPulse(time));
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,13 +8,15 @@ public class PlayerControls : MonoBehaviour
     Rigidbody2D rb2d;
     SpriteRenderer spriteRenderer;
 
-    public static float moveSpeed = 7;
-    public static float jumpForce = 7;
+    public static float moveSpeed;
+    public static float jumpForce;
+    public static float fallingMultiplier = 2;
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform groundCheck;
 
     private float horizontal;
+    public static bool isKnockedback = false;
 
 
     void Awake()
@@ -25,7 +28,15 @@ public class PlayerControls : MonoBehaviour
     void FixedUpdate()
     {
         // set the player's horizontal velocity to input value times speed
-        rb2d.linearVelocityX = horizontal * moveSpeed;
+        if (!isKnockedback) 
+        {
+            rb2d.linearVelocityX = horizontal * moveSpeed;
+        }
+
+        if (rb2d.linearVelocityY < 0)
+        {
+            rb2d.linearVelocity += (fallingMultiplier - 1) * Physics2D.gravity.y * Time.deltaTime * Vector2.up;
+        }
     }
 
     public bool IsGrounded()
@@ -58,6 +69,13 @@ public class PlayerControls : MonoBehaviour
         {
             rb2d.linearVelocityY /= 1.6f;
         }
+    }
+
+    public static IEnumerator CooldownKnockback(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isKnockedback = false;
+        Debug.Log("boop");
     }
 
     // TODO: add sprint and crouch (could have)

@@ -9,12 +9,12 @@ public class SeaController : MonoBehaviour
     private Dictionary<Vector2, SeaNode> seaNodes;
     public static List<GameObject> seaNodeGameObjects = new();
 
-    public static int quality = 75;  // affects mesh generation for SeaMeshController
+    public static int quality = 150;  // affects mesh generation for SeaMeshController
 
 
     void Awake()
     {
-        GenerateSea(60, 10, -15, -12, 2f);
+        GenerateSea(120, 10, -30, -12, 2f);
     }
 
     void Update()
