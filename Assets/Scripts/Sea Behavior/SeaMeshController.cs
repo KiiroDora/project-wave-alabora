@@ -17,6 +17,7 @@ public class SeaMeshController : MonoBehaviour
 
     void Start()
     {
+        vertices = new();
         foreach (GameObject node in SeaController.seaNodeGameObjects.ToArray())  // add all initial node positions to vertices
         {
             vertices.Add(node.transform.position);

@@ -64,7 +64,7 @@ public class EnemyBehavior : EntityBehavior
     {
         if (collision.gameObject.CompareTag("Sea"))
         {
-            Destroy(gameObject);
+            Die();
         }
     }
 
@@ -96,6 +96,11 @@ public class EnemyBehavior : EntityBehavior
 
     public override void Die()
     {
+        GameController.enemies.Remove(gameObject);
+        if (GameController.enemies.Count <= 0 && EnemySpawner.allEnemiesSpawned)
+        {
+            GameController.winTrigger?.Invoke();
+        }
         Destroy(gameObject); // temporary
         // TODO: stuff to add for Enemy's OnDeath -> Play animation then Destroy gameobject in animation's OnExit
         base.Die();  // handles death here
@@ -123,17 +128,25 @@ public class EnemyBehavior : EntityBehavior
                 hitboxToUse = hitboxes[0];
             }
 
+            SpriteRenderer temporaryImage = hitboxToUse.GetComponentInChildren<SpriteRenderer>();  // TODO: remove temporary stuff here
+            temporaryImage.enabled = true;
+            temporaryImage.color = Color.blue;
+
             // TODO: Play animation
             canAttack = false;
             yield return new WaitForSeconds(hitboxToUse.entryTime);  // wait for windup
 
             hitboxToUse.col2D.enabled = true;  // activate hitbox
+            temporaryImage.color = Color.red;
                 
             yield return new WaitForSeconds(hitboxToUse.contactTime);
                 
             hitboxToUse.col2D.enabled = false;  // deactivate hitbox
+            temporaryImage.color = Color.blue;
                 
             yield return new WaitForSeconds(hitboxToUse.exitTime);
+
+            temporaryImage.enabled = false;
 
             canAttack = true;
         }

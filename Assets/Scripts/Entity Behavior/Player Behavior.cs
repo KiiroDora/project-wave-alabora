@@ -18,6 +18,8 @@ public class PlayerBehavior : EntityBehavior
     {
         base.Awake();
 
+        TextController.UpdatePulseText(pulseState.ToString());
+
         PlayerControls.jumpForce = baseJumpForce;
         PlayerControls.moveSpeed = baseMoveSpeed;
 
@@ -46,6 +48,10 @@ public class PlayerBehavior : EntityBehavior
                 hitboxToUse = hitboxes[0];
             }
 
+            SpriteRenderer temporaryImage = hitboxToUse.GetComponentInChildren<SpriteRenderer>();  // TODO: remove temporary stuff here
+            temporaryImage.enabled = true;
+            temporaryImage.color = Color.blue;
+
             // TODO: Play animation
             canAttack = false;
             yield return new WaitForSeconds(hitboxToUse.entryTime / attackSpeed);  // wait for windup
@@ -53,13 +59,18 @@ public class PlayerBehavior : EntityBehavior
 
             hitboxToUse.col2D.enabled = true;  // activate hitbox
 
+            temporaryImage.color = Color.red;
+
             yield return new WaitForSeconds(hitboxToUse.contactTime);
 
             hurtbox.enabled = true;  // invincibility frames end
             hitboxToUse.col2D.enabled = false;  // deactivate hitbox
 
+            temporaryImage.color = Color.blue;
+
             yield return new WaitForSeconds(hitboxToUse.exitTime / attackSpeed);
 
+            temporaryImage.enabled = false;
             canAttack = true;
         }
     }
@@ -74,18 +85,17 @@ public class PlayerBehavior : EntityBehavior
         {
             pulseState++;
             if ((int)pulseState > 5) { pulseState = PulseState.XXL; }
-            Debug.Log(pulseState);
         }
         else if (pulse >= 3)
         {
-            Debug.Log(pulseState);
         }
         else
         {
             pulseState--;
             if ((int)pulseState <= 0) { pulseState = PulseState.DEAD; }
-            Debug.Log(pulseState);
         }
+
+        TextController.UpdatePulseText(pulseState.ToString());
 
         timesGotHit = 0;
         timesHit = 0;
@@ -104,8 +114,7 @@ public class PlayerBehavior : EntityBehavior
         if (collision.gameObject.CompareTag("Sea"))
         {
             Destroy(gameObject);
-            Time.timeScale = 0;
-            Debug.Log("YOU DIED FOR REALS");
+            GameController.loseTrigger?.Invoke();
         }
     }
 

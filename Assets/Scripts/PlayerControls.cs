@@ -75,7 +75,6 @@ public class PlayerControls : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isKnockedback = false;
-        Debug.Log("boop");
     }
 
     // TODO: add sprint and crouch (could have)

@@ -27,12 +27,10 @@ public class Hitbox : MonoBehaviour
             if (target is PlayerBehavior targetPlayer && attacker is EnemyBehavior)
             {
                 targetPlayer.timesGotHit++;
-                Debug.Log("got hit");
 
                 if (targetPlayer.pulseState == PlayerBehavior.PulseState.DEAD)
                 {
                     Destroy(targetPlayer.gameObject);  // TODO: make actual gameover screen
-                    Time.timeScale = 0;
                     Debug.Log("YOU DIED FOR REALS");
                 }
 
@@ -50,7 +48,6 @@ public class Hitbox : MonoBehaviour
             else if (target is EnemyBehavior enemy && attacker is PlayerBehavior attackerPlayer)
             {
                 attackerPlayer.timesHit++;
-                Debug.Log("hit");
 
                 enemy.TakeDamage(damage);  // target takes damage
 
