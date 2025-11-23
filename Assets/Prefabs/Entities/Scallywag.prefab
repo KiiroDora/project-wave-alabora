@@ -123,12 +123,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aa8cc5962d7bef4398525d67a300229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hitbox
-  entryTime: 1
+  entryTime: 0.3
   contactTime: 0.2
-  exitTime: 1
+  exitTime: 0.4
   col2D: {fileID: 0}
   damage: 0
-  knockbackRate: 1
+  knockbackRate: 3
 --- !u!1 &4708505242852704882
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,12 +420,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aa8cc5962d7bef4398525d67a300229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hitbox
-  entryTime: 1
+  entryTime: 0.3
   contactTime: 0.2
-  exitTime: 1
+  exitTime: 0.4
   col2D: {fileID: 0}
   damage: 0
-  knockbackRate: 1
+  knockbackRate: 3
 --- !u!1 &7976869095030089288
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +631,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

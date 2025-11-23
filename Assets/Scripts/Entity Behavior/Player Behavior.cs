@@ -18,18 +18,22 @@ public class PlayerBehavior : EntityBehavior
     {
         base.Awake();
 
-        TextController.UpdatePulseText(pulseState.ToString());
-
         PlayerControls.jumpForce = baseJumpForce;
         PlayerControls.moveSpeed = baseMoveSpeed;
 
-        StartCoroutine(CheckPulse(3f));
+        StartCoroutine(CheckPulse(5f));
+    }
+
+    void Start()
+    {
+        TextController.UpdatePulseText(pulseState.ToString());
     }
 
     public override void Die()
     {
-        base.Die();  // handles death here
-        // TODO: stuff to add for Player's OnDeath -> set gameover screen, stop game time
+        Destroy(gameObject);
+        GameController.loseTrigger?.Invoke();
+        base.Die(); 
     }
 
     public override IEnumerator AttackCoroutine()
@@ -113,8 +117,7 @@ public class PlayerBehavior : EntityBehavior
     {
         if (collision.gameObject.CompareTag("Sea"))
         {
-            Destroy(gameObject);
-            GameController.loseTrigger?.Invoke();
+            Die();
         }
     }
 

@@ -8,7 +8,7 @@ public class TextController : MonoBehaviour
 
     void Awake()
     {
-        pulseText = GameObject.Find("Pulse Text").GetComponent<TextMeshProUGUI>();
+        pulseText = GameObject.Find("Main Canvas/Pulse Text").GetComponent<TextMeshProUGUI>();
     }
 
     public static void UpdatePulseText(string newText)

@@ -30,11 +30,10 @@ public class Hitbox : MonoBehaviour
 
                 if (targetPlayer.pulseState == PlayerBehavior.PulseState.DEAD)
                 {
-                    Destroy(targetPlayer.gameObject);  // TODO: make actual gameover screen
-                    Debug.Log("YOU DIED FOR REALS");
+                    targetPlayer.Die(); // TODO: make actual gameover screen
                 }
 
-                if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
+                if (knockbackRate > 0 && !PlayerControls.isKnockedback)  // if attack has knockback, target gets knocked back
                 {
                     PlayerControls.isKnockedback = true;
                     StartCoroutine(PlayerControls.CooldownKnockback(0.5f));
@@ -51,7 +50,7 @@ public class Hitbox : MonoBehaviour
 
                 enemy.TakeDamage(damage);  // target takes damage
 
-                if (knockbackRate > 0)  // if attack has knockback, target gets knocked back
+                if (knockbackRate > 0 && !enemy.isKnockedback)  // if attack has knockback, target gets knocked back
                 {
                     enemy.isKnockedback = true;
                     StartCoroutine(enemy.CooldownKnockback(1f));

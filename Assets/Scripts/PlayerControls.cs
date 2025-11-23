@@ -10,7 +10,7 @@ public class PlayerControls : MonoBehaviour
 
     public static float moveSpeed;
     public static float jumpForce;
-    public static float fallingMultiplier = 2;
+    public static float fallingMultiplier = 3;
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform groundCheck;

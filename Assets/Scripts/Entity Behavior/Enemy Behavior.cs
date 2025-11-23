@@ -103,7 +103,7 @@ public class EnemyBehavior : EntityBehavior
         }
         Destroy(gameObject); // temporary
         // TODO: stuff to add for Enemy's OnDeath -> Play animation then Destroy gameobject in animation's OnExit
-        base.Die();  // handles death here
+        base.Die();
     }
 
     public virtual IEnumerator CooldownKnockback(float time)
