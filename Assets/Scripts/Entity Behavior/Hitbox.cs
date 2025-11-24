@@ -33,14 +33,14 @@ public class Hitbox : MonoBehaviour
                     targetPlayer.Die(); // TODO: make actual gameover screen
                 }
 
-                if (knockbackRate > 0 && !PlayerControls.isKnockedback)  // if attack has knockback, target gets knocked back
+                if (knockbackRate > 0 && (!PlayerControls.isKnockedback || attacker.name.Contains("Captain")))  // if attack has knockback, target gets knocked back
                 {
                     PlayerControls.isKnockedback = true;
                     StartCoroutine(PlayerControls.CooldownKnockback(0.5f));
 
                     Vector2 knockbackVector = collision.gameObject.transform.position - transform.position;
                     collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
-                        knockbackVector.normalized * knockbackRate, ForceMode2D.Impulse
+                        (1 + 1/((int)targetPlayer.pulseState + 1)) * knockbackRate * knockbackVector.normalized, ForceMode2D.Impulse
                     );
                 }
             }
@@ -57,7 +57,8 @@ public class Hitbox : MonoBehaviour
 
                     Vector2 knockbackVector = collision.gameObject.transform.position - transform.position;
                     collision.gameObject.GetComponentInParent<Rigidbody2D>().AddForce(
-                        (int)attackerPlayer.pulseState * 0.2f * knockbackRate * knockbackVector.normalized, ForceMode2D.Impulse
+                        enemy.selfKnockbackMultiplier * (int)attackerPlayer.pulseState * 0.2f * knockbackRate * knockbackVector.normalized, 
+                        ForceMode2D.Impulse
                     );
                 }
             }

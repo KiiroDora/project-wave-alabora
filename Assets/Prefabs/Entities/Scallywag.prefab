@@ -692,7 +692,7 @@ MonoBehaviour:
     m_Bits: 8
   maxhp: 50
   hp: 50
-  moveSpeed: 2
+  moveSpeed: 4
   isKnockedback: 0
   selfKnockbackMultiplier: 1
 --- !u!1 &9199634201562865172

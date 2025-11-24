@@ -407,11 +407,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  maxhp: 50
-  hp: 50
-  moveSpeed: 2
+  maxhp: 100
+  hp: 100
+  moveSpeed: 4.5
   isKnockedback: 0
-  selfKnockbackMultiplier: 1
+  selfKnockbackMultiplier: 0.5
 --- !u!1 &2346507200881632215
 GameObject:
   m_ObjectHideFlags: 0

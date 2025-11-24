@@ -13,7 +13,7 @@ public class EnemyBehavior : EntityBehavior
 
     public int maxhp = 50;
     public int hp;
-    [SerializeField] private float moveSpeed = 2;
+    [SerializeField] private float moveSpeed = 4;
     public bool isKnockedback = false;
     public float selfKnockbackMultiplier = 1f;
 
