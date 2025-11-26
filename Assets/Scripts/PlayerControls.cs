@@ -21,6 +21,7 @@ public class PlayerControls : MonoBehaviour
 
     void Awake()
     {
+        isKnockedback = false;
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
