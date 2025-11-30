@@ -31,7 +31,17 @@ public class GameController : MonoBehaviour
     {
         if (!isGameOver)
         {
-            Time.timeScale = isPaused ? 1 : 0;
+            if (isPaused)
+            {
+                DynamicAudioSwitcher.audioSource.UnPause();
+                Time.timeScale = 1;
+            }
+            else
+            {
+                DynamicAudioSwitcher.audioSource.Pause();
+                Time.timeScale = 0;
+            }
+            
             staticPauseScreen.SetActive(!staticPauseScreen.activeSelf);
             isPaused = staticPauseScreen.activeSelf;
         }
@@ -40,14 +50,16 @@ public class GameController : MonoBehaviour
     public void LoseGame()
     {
         isGameOver = true;
-        Time.timeScale = 0;
+        DynamicAudioSwitcher.audioSource.Stop();
         loseScreen.SetActive(true);
+        Time.timeScale = 0;
     }
 
     public void WinGame()
     {
         isGameOver = true;
-        Time.timeScale = 0;
+        DynamicAudioSwitcher.audioSource.Stop();
         winScreen.SetActive(true);
+        Time.timeScale = 0;
     }
 }

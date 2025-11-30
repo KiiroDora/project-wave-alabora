@@ -6,8 +6,7 @@ public class PlayerControls : MonoBehaviour
 {
     // Credits --> Code referenced and edited from Contraband's "Basic Movement in Unity2D using the New Input System, in 6 minutes." video
     Rigidbody2D rb2d;
-    SpriteRenderer spriteRenderer;
-
+    public Animator animator;
     public static float moveSpeed;
     public static float jumpForce;
     public static float fallingMultiplier = 3;
@@ -17,13 +16,14 @@ public class PlayerControls : MonoBehaviour
 
     private float horizontal;
     public static bool isKnockedback = false;
+    public static bool isFlipped = false;
 
 
     void Awake()
     {
         isKnockedback = false;
         rb2d = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -32,6 +32,7 @@ public class PlayerControls : MonoBehaviour
         if (!isKnockedback) 
         {
             rb2d.linearVelocityX = horizontal * moveSpeed;
+            animator.SetBool("isWalking", horizontal != 0);
         }
 
         if (rb2d.linearVelocityY < 0)
@@ -49,13 +50,15 @@ public class PlayerControls : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         horizontal = context.ReadValue<Vector2>().x;
-        if (!spriteRenderer.flipX && horizontal < 0)
+        if (!isFlipped && horizontal < 0)
         {
-            spriteRenderer.flipX = true;
+            isFlipped = true;
+            transform.localScale = new Vector3(-1, 1, 1);
         }
-        else if (spriteRenderer.flipX && horizontal > 0)
+        else if (isFlipped && horizontal > 0)
         {
-            spriteRenderer.flipX = false;
+            isFlipped = false;
+            transform.localScale = new Vector3(1, 1, 1);
         }
     }
 

@@ -13,6 +13,6 @@ public class TextController : MonoBehaviour
 
     public static void UpdatePulseText(string newText)
     {
-        pulseText.text = "Pulse: " + newText;
+        pulseText.text = newText;
     }
 }

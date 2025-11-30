@@ -26,9 +26,9 @@ public class Hitbox : MonoBehaviour
 
             if (target is PlayerBehavior targetPlayer && attacker is EnemyBehavior)
             {
-                targetPlayer.timesGotHit++;
+                targetPlayer.TakeDamage();
 
-                if (targetPlayer.pulseState == PlayerBehavior.PulseState.DEAD)
+                if (targetPlayer.pulseState == PlayerBehavior.PulseState.DYING)
                 {
                     targetPlayer.Die(); // TODO: make actual gameover screen
                 }

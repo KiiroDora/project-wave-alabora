@@ -12,15 +12,20 @@ public class EntityBehavior : MonoBehaviour
     protected SpriteRenderer spriteRenderer;
     [SerializeField] protected Collider2D hurtbox;
     [SerializeField] protected Hitbox[] hitboxes;
+    [SerializeField] protected AudioClip[] attackAudioClips;
+    [SerializeField] protected AudioClip[] hurtAudioClips;
+    [SerializeField] protected AudioClip[] deadAudioClips;
+    protected AudioSource audioSource; 
 
 
     protected virtual void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     public virtual void Die()
     {
+        StartCoroutine(WaitAndDie());
         OnDeath?.Invoke();  // invoke death events
     }
 
@@ -32,6 +37,14 @@ public class EntityBehavior : MonoBehaviour
     public virtual void Attack()
     {
         StartCoroutine(AttackCoroutine());
+    }
+
+    public IEnumerator WaitAndDie()
+    {
+        audioSource.clip = deadAudioClips[Random.Range(0, deadAudioClips.Length)];
+        audioSource.Play();
+        yield return new WaitForSeconds(audioSource.clip.length + 0.2f);
+        Destroy(gameObject);
     }
 
 }

@@ -1,9 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class EnemyBehavior : EntityBehavior
 {
     Rigidbody2D rb2d;
+    Animator animator;
     [SerializeField] private Transform groundCheckRight;
     [SerializeField] private Transform groundCheckLeft;
     [SerializeField] private Transform groundCheckMiddle;
@@ -22,10 +24,13 @@ public class EnemyBehavior : EntityBehavior
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
         rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        audioSource = GetComponentInChildren<AudioSource>();
 
         moveSpeed += Random.Range(0, 0.2f);
         hp = maxhp;
         base.Awake();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void FixedUpdate()
@@ -89,7 +94,11 @@ public class EnemyBehavior : EntityBehavior
 
     public void TakeDamage(int damage)
     {
+        audioSource.clip = hurtAudioClips[Random.Range(0, hurtAudioClips.Length)];
+        audioSource.Play();
         hp = Mathf.Clamp(hp - damage, 1, 999);  // reduce hp (cannot be lower than 0)
+        float hpRate = 0.6f + (float)Mathf.Pow(hp, 2)/Mathf.Pow(maxhp, 2);
+        spriteRenderer.color = new Color(1, hpRate, hpRate);
         OnDamage?.Invoke();  // invoke damage events
         selfKnockbackMultiplier = 1 + 1 / hp; 
     }
@@ -101,8 +110,6 @@ public class EnemyBehavior : EntityBehavior
         {
             GameController.winTrigger?.Invoke();
         }
-        Destroy(gameObject); // temporary
-        // TODO: stuff to add for Enemy's OnDeath -> Play animation then Destroy gameobject in animation's OnExit
         base.Die();
     }
 
@@ -116,6 +123,7 @@ public class EnemyBehavior : EntityBehavior
     {
         if (canAttack)
         {
+            animator.SetBool("isAttacking", true);
             Hitbox hitboxToUse;
             if (spriteRenderer.flipX == true)
             {
@@ -128,26 +136,24 @@ public class EnemyBehavior : EntityBehavior
                 hitboxToUse = hitboxes[0];
             }
 
-            SpriteRenderer temporaryImage = hitboxToUse.GetComponentInChildren<SpriteRenderer>();  // TODO: remove temporary stuff here
-            temporaryImage.enabled = true;
-            temporaryImage.color = Color.blue;
-
-            // TODO: Play animation
             canAttack = false;
             yield return new WaitForSeconds(hitboxToUse.entryTime);  // wait for windup
 
             hitboxToUse.col2D.enabled = true;  // activate hitbox
-            temporaryImage.color = Color.red;
+
+            if (!audioSource.isPlaying) 
+            {
+                audioSource.clip = attackAudioClips[Random.Range(0, attackAudioClips.Length)];
+                audioSource.Play();
+            }
                 
             yield return new WaitForSeconds(hitboxToUse.contactTime);
                 
             hitboxToUse.col2D.enabled = false;  // deactivate hitbox
-            temporaryImage.color = Color.blue;
                 
             yield return new WaitForSeconds(hitboxToUse.exitTime);
 
-            temporaryImage.enabled = false;
-
+            animator.SetBool("isAttacking", false);
             canAttack = true;
         }
     }

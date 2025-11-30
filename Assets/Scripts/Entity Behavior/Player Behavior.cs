@@ -6,21 +6,28 @@ public class PlayerBehavior : EntityBehavior
     public int timesGotHit = 0;
     public int timesHit = 2;
 
-    public enum PulseState {DEAD, SMALL, MEDIUM, LARGE, XL, XXL};
-    public PulseState pulseState = PulseState.MEDIUM;
+    public enum PulseState {DYING, CALMING, NORMAL, STIRRING, STORMING, RAGING};
+    public PulseState pulseState = PulseState.NORMAL;
+
+    public Animator animator;
 
     public float attackSpeed = 1;
     public float baseMoveSpeed = 8;
     public float baseJumpForce = 8;
 
+    [SerializeField] private ParticleSystem pulseIndicator;
+
 
     protected override void Awake()
     {
         base.Awake();
+        audioSource = GetComponentInChildren<AudioSource>();
+        animator = GetComponent<Animator>();
 
         PlayerControls.jumpForce = baseJumpForce;
         PlayerControls.moveSpeed = baseMoveSpeed;
 
+        DynamicAudioSwitcher.instance.SwitchAudioSeamless(DynamicAudioSwitcher.instance.dynamicBGM_Array[(int)pulseState]);
         StartCoroutine(CheckPulse(5f));
     }
 
@@ -29,9 +36,18 @@ public class PlayerBehavior : EntityBehavior
         TextController.UpdatePulseText(pulseState.ToString());
     }
 
+    public void TakeDamage()
+    {
+        timesGotHit++;
+        if (!audioSource.isPlaying) 
+        {
+            audioSource.clip = hurtAudioClips[Random.Range(0, hurtAudioClips.Length)];
+            audioSource.Play();
+        }
+    }
+
     public override void Die()
     {
-        Destroy(gameObject);
         GameController.loseTrigger?.Invoke();
         base.Die(); 
     }
@@ -40,42 +56,24 @@ public class PlayerBehavior : EntityBehavior
     {
         if (canAttack)
         {
-            Hitbox hitboxToUse;
-            if (spriteRenderer.flipX == true)
-            {
-                // left hitbox
-                hitboxToUse = hitboxes[1];
-            }
-            else
-            {
-                // right hitbox
-                hitboxToUse = hitboxes[0];
-            }
-
-            SpriteRenderer temporaryImage = hitboxToUse.GetComponentInChildren<SpriteRenderer>();  // TODO: remove temporary stuff here
-            temporaryImage.enabled = true;
-            temporaryImage.color = Color.blue;
-
-            // TODO: Play animation
+            animator.SetBool("isAttacking", true);
             canAttack = false;
-            yield return new WaitForSeconds(hitboxToUse.entryTime / attackSpeed);  // wait for windup
+            yield return new WaitForSeconds(hitboxes[0].entryTime / attackSpeed);  // wait for windup
             hurtbox.enabled = false;  // invincibility frames start
 
-            hitboxToUse.col2D.enabled = true;  // activate hitbox
+            hitboxes[0].col2D.enabled = true;  // activate hitbox
+            audioSource.clip = attackAudioClips[Random.Range(0, attackAudioClips.Length)];
+            audioSource.Play();
 
-            temporaryImage.color = Color.red;
-
-            yield return new WaitForSeconds(hitboxToUse.contactTime);
+            yield return new WaitForSeconds(hitboxes[0].contactTime);
 
             hurtbox.enabled = true;  // invincibility frames end
-            hitboxToUse.col2D.enabled = false;  // deactivate hitbox
+            hitboxes[0].col2D.enabled = false;  // deactivate hitbox
 
-            temporaryImage.color = Color.blue;
+            yield return new WaitForSeconds(hitboxes[0].exitTime / attackSpeed);
 
-            yield return new WaitForSeconds(hitboxToUse.exitTime / attackSpeed);
-
-            temporaryImage.enabled = false;
             canAttack = true;
+            animator.SetBool("isAttacking", false);
         }
     }
 
@@ -88,7 +86,13 @@ public class PlayerBehavior : EntityBehavior
         if (pulse > 5)
         {
             pulseState++;
-            if ((int)pulseState > 5) { pulseState = PulseState.XXL; }
+            if ((int)pulseState > 5) { pulseState = PulseState.RAGING; }
+            else 
+            {
+                DynamicAudioSwitcher.instance.SwitchAudioSeamless(DynamicAudioSwitcher.instance.dynamicBGM_Array[(int)pulseState]);
+            }
+            var shape = pulseIndicator.shape;
+            shape.scale = new Vector3(0.5f * (int)pulseState, 1, 1);  
         }
         else if (pulse >= 3)
         {
@@ -96,7 +100,13 @@ public class PlayerBehavior : EntityBehavior
         else
         {
             pulseState--;
-            if ((int)pulseState <= 0) { pulseState = PulseState.DEAD; }
+            if ((int)pulseState < 0) { pulseState = PulseState.DYING; }
+            else 
+            {
+                DynamicAudioSwitcher.instance.SwitchAudioSeamless(DynamicAudioSwitcher.instance.dynamicBGM_Array[(int)pulseState]);
+            }
+            var shape = pulseIndicator.shape;
+            shape.scale = new Vector3(0.5f * (int)pulseState, 1, 1);
         }
 
         TextController.UpdatePulseText(pulseState.ToString());
@@ -112,7 +122,6 @@ public class PlayerBehavior : EntityBehavior
         StartCoroutine(CheckPulse(time));
     }
 
-    // TODO: this is a temporary gameover
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Sea"))
